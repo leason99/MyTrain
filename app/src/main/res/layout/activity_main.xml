@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="leason.mytraintime.MainActivity">
+   <!--
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/search"
+        android:layout_alignParentStart="true" />-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="起站"
+        android:id="@+id/start_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="57dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="終點站"
+        android:id="@+id/end_button"
+
+        android:layout_alignTop="@+id/start_button"
+        android:layout_alignParentEnd="true" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="47dp"
+        android:layout_below="@+id/start_button"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:id="@+id/radioGroup"
+        android:checkedButton="@+id/all">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部"
+            android:id="@+id/all"
+            android:layout_gravity="center|left"
+            android:layout_weight="1"
+            android:checked="false"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="對號車"
+            android:id="@+id/express"
+
+            android:checked="false"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="區間車"
+            android:id="@+id/noexpress"
+            android:layout_gravity="center|right"
+            android:layout_weight="1"
+            android:checked="false" />
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查詢"
+        android:id="@+id/search"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/linearLayout">
+
+      <!--  <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:text="日期"
+            android:layout_weight="1" />
+-->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="時間"
+            android:id="@+id/time"
+            android:layout_alignTop="@+id/date"
+            android:layout_toEndOf="@+id/date"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="現在"
+            android:id="@+id/nowtime"
+            android:layout_alignBottom="@+id/time"
+            android:layout_toEndOf="@+id/time"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <ListView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:id="@+id/history"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView4"></ListView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/counttime"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/search" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="歷史紀錄"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/search"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="火車班次"
+            android:id="@+id/TrainNoTitle"
+            android:layout_weight="1"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="離站時間"
+            android:id="@+id/startTime"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="到站時間"
+            android:id="@+id/endTime"
+            android:layout_weight="1"
+            android:textSize="30dp" />
+
+    </LinearLayout>
+
+  <!--  <ListView
+        android:layout_width="match_parent"
+        android:layout_height="508dp"
+        android:id="@+id/resultListView"></ListView>
+!-->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="508dp"
+        android:id="@+id/resultListView"/>
+
+
+</LinearLayout>
