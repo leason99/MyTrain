@@ -24,7 +24,10 @@
         android:id="@+id/start_button"
         android:layout_alignParentStart="true"
         android:layout_marginTop="57dp"
-        />
+        android:allowUndo="false"
+        android:clickable="false"
+        android:elevation="100dp"
+        android:layout_toStartOf="@+id/counttime" />
 
     <Button
         android:layout_width="wrap_content"
@@ -33,7 +36,8 @@
         android:id="@+id/end_button"
 
         android:layout_alignTop="@+id/start_button"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/search" />
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -129,7 +133,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/counttime"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/search" />
@@ -142,5 +145,12 @@
         android:id="@+id/textView4"
         android:layout_below="@+id/search"
         android:layout_centerHorizontal="true" />
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="446dp"></TableRow>
 
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -114,7 +115,7 @@ public class SearchResult extends FragmentActivity implements AdapterView.OnItem
         */
         listview=(RecyclerView)findViewById(R.id.resultListView);
         listview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
+        listview.addItemDecoration(new SpaceItemDecoration(10));
 
 
         handler =new Handler(){
@@ -124,7 +125,7 @@ public class SearchResult extends FragmentActivity implements AdapterView.OnItem
             recyclerAdapter=(RecyclerAdapter) msg.obj;
 
         //    listview.setAdapter(simpleAdapter);    //change for recycleview
-    listview.setAdapter(recyclerAdapter);
+            listview.setAdapter(recyclerAdapter);
             recyclerAdapter.notifyDataSetChanged();
             mainservice.instance.addHistory(startStation,endStation);
             progressDialog.dismiss();
@@ -153,7 +154,21 @@ public class SearchResult extends FragmentActivity implements AdapterView.OnItem
         return false;
     }
 
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
 
+        private int space;
+
+        public SpaceItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+            if(parent.getChildPosition(view) != 0)
+                outRect.top = space;
+        }
+    }
 
 }
 

@@ -1,43 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout android:layout_height="wrap_content"
-             android:layout_width="match_parent" >
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#747171"
+    android:id="@+id/RecyclerItemView">
 
-    <TextView
+    <LinearLayout android:layout_height="wrap_content"
+             android:layout_width="74dp"
+android:orientation="vertical"
+        android:textAlignment="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trainclass_textview"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textColor="@android:color/black"
+            android:text="車種" />
+
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/TrainNo"
-        android:layout_weight="1"
-        android:textSize="30dp"
-        android:textColor="#000000" />
+            android:textSize="30dp"
+        android:textColor="#000000"
+            android:textAlignment="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/DepartureTime"
-        android:layout_weight="1"
-        android:textSize="30dp"
-        android:textColor="#000000" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/Arrivaltime"
-        android:layout_weight="1"
-        android:textSize="30dp"
-        android:textColor="#000000" />
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/note"
-        android:textSize="20dp"
-        android:ellipsize="marquee"
-        android:textColor="#000000" />
+        android:layout_weight="1"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_height="wrap_content"
+            android:text="出發時間"
+            android:id="@+id/DepartureTime"
+                android:textSize="30dp"
+            android:textColor="#000000"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:text=">"
+                android:layout_height="wrap_content"
+                android:textSize="40sp"
+                android:textStyle="normal|bold"
+                android:layout_width="35dp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="抵達時間"
+                android:id="@+id/Arrivaltime"
+                android:textSize="30dp"
+                android:textColor="#000000"
+                android:layout_weight="1"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:text="總共時間"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_textview"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/note"
+            android:ellipsize="marquee"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:text="備註資料"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="66dp"
+        android:layout_height="match_parent"></LinearLayout>
 </LinearLayout>

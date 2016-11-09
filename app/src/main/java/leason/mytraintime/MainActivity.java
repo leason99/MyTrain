@@ -185,8 +185,8 @@ handler=new Handler(){
     }
 
     private SimpleAdapter initHistory() {
-Boolean edited=false;
-List<Map<String,String>> history=new ArrayList<Map<String,String>>();
+    Boolean edited=false;
+    List<Map<String,String>> history=new ArrayList<Map<String,String>>();
 
 
         DocumentBuilderFactory docbuildfactory=DocumentBuilderFactory.newInstance();
@@ -223,7 +223,6 @@ List<Map<String,String>> history=new ArrayList<Map<String,String>>();
 
 
             }
-
 
  simpleAdater =new SimpleAdapter(getApplicationContext(),history,R.layout.history_listview,new String[]{"departure","arrival"},new int[]{R.id.history_departure,R.id.history_arrival});
 

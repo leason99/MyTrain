@@ -1,41 +1,23 @@
 package leason.mytraintime;
 
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.provider.DocumentsContract;
 import android.support.annotation.Nullable;
-import android.support.v4.provider.DocumentFile;
 import android.util.Log;
-import android.util.Xml;
-import android.view.animation.Transformation;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pnikosis.materialishprogress.ProgressWheel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,11 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -70,7 +50,9 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class mainservice extends Service {
 
-    static String DataUri = "http://162.243.4.139/php/TrainData.db";
+    //static String DataUri = "http://162.243.4.139/php/TrainData.db";
+    static String DataUri = "http://leason.hol.es/TrainData.db";
+
     Handler handler;
     File file,HistoryXml;
 
@@ -78,7 +60,7 @@ public class mainservice extends Service {
     String startStation, endStation, time;
     Cursor c;
     SQLiteDatabase trainDB;
-    private List<Map<String, String>> search_results;
+    private List<Map<String, Object>> search_results;
     String stationName;
 static mainservice instance;
     int type;  //   全部＝1  對號車＝2 非對號車 ＝3
@@ -259,112 +241,156 @@ void searchforResult(Bundle bundle){
 }
     RecyclerAdapter search() {
         Log.i("timetest","startsearch");
-        search_results = new ArrayList<Map<String, String>>();
+        search_results = new ArrayList<Map<String, Object>>();
 
          // c =trainDB.rawQuery("SELECT TrainNo,Direction,StopTimes FROM Train", new String[]{"TrainNo", "Direction", "StopTimes"});
             trainDB=MainActivity.instance.trainDB;
         switch (type)
 
         {
-            case 1:
-                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note"}, null, null, null, null, null);
+            case 1: //全部
+                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note","TrainType"}, null, null, null, null, null);
                 break;
-            case 2:
-                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note"}, "TrainType=1", null, null, null, null);
+            case 2://對號
+                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note","TrainType"}, "TrainType!=4", null, null, null, null);
                 break;
-            case 3:
-                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note"}, "TrainType=2", null, null, null, null);
+            case 3://非對號
+                c = trainDB.query("Train", new String[]{"TrainNo", "StopTimes", "Note","TrainType"}, "TrainType=4", null, null, null, null);
                 break;
 
         }
         Log.i("timetest","sql query END");
         int choosehour = Integer.parseInt(time.substring(0, time.indexOf(":")));
         int chooseminute = Integer.parseInt(time.toString().substring(time.indexOf(":") + 1, time.length()));
+        Map search_result;
         c.moveToFirst();
-        String StopTime, ArrivalTime, DepartureTime;
+        String StopTimeJson, ArrivalTime , DepartureTime;
+        List<StopTime> StopTimeList=null;
+        ObjectMapper mapper = new ObjectMapper();
         for (int i = 0; i < c.getCount(); i++) {
 
 
-            StopTime = c.getString(c.getColumnIndex("StopTimes"));
-            ObjectMapper mapper = new ObjectMapper();
+            StopTimeJson = c.getString(c.getColumnIndex("StopTimes"));
+            StopTimeJson=  StopTimeJson.toLowerCase();
+
             try {
-                List<StopTime> list = mapper.readValue(StopTime, new TypeReference<List<StopTime>>(){});
+                 StopTimeList = mapper.readValue(StopTimeJson, new TypeReference<List<StopTime>>(){});
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            try {
-                JSONArray StopTimeJsonArray = new JSONArray(StopTime);
 
 
-                for (int arraycount = 0; arraycount < StopTimeJsonArray.length(); arraycount++) {
-                    JSONObject StopTimeJsonObject = new JSONObject(StopTimeJsonArray.getString(arraycount));
-                    stationName = new JSONObject(StopTimeJsonObject.getString("StationName")).getString("Zh_tw");
+            for (int arraycount = 0; arraycount < StopTimeList.size(); arraycount++) {
 
-                    if (stationName.compareTo(startStation) == 0)
+                stationName=StopTimeList.get(arraycount).getstationname().getzh_tw();
+                if (stationName.compareTo(startStation) == 0)
 
-                    {
-                        DepartureTime = StopTimeJsonObject.getString("DepartureTime");
+                {
+                    DepartureTime = StopTimeList.get(arraycount).getdeparturetime();
 
-                        int hour = Integer.parseInt(DepartureTime.substring(0, DepartureTime.indexOf(":")));
-                        int minute = Integer.parseInt(DepartureTime.substring(DepartureTime.indexOf(":") + 1, DepartureTime.length()));
-
-                        Boolean check;
-
-                        if (hour > choosehour) {
-                            check = true;
-                        } else if (hour == choosehour && minute > chooseminute)
-                            check = true;
-                        else {
-                            check = false;
-                        }
-                        if (check) {
+                    int DepartureHour = Integer.parseInt(DepartureTime.substring(0, DepartureTime.indexOf(":")));
+                    int DepartureMinute = Integer.parseInt(DepartureTime.substring(DepartureTime.indexOf(":") + 1, DepartureTime.length()));
 
 
-                            for (int arraycount2 = arraycount; arraycount2 < StopTimeJsonArray.length(); arraycount2++) {
+                    Boolean check;
 
-                                StopTimeJsonObject = new JSONObject(StopTimeJsonArray.getString(arraycount2));
-                                stationName = new JSONObject(StopTimeJsonObject.getString("StationName")).getString("Zh_tw");
-                                if (stationName.compareTo(endStation) == 0) {
-                                    Map search_result = new HashMap<String, String>();
-                                    ArrivalTime = StopTimeJsonObject.getString("ArrivalTime");
-                                    search_result.put("TrainNo", c.getString(c.getColumnIndex("TrainNo")));
-                                    search_result.put("Note", c.getString(c.getColumnIndex("Note")));
-                                    search_result.put("DepartureTime", DepartureTime);
-                                    //   search_result.put("DepartureTimeMinute",String.valueOf(minute));
-                                    search_result.put("ArrivalTime", ArrivalTime);
+                    if (DepartureHour > choosehour) {
+                        check = true;
+                    } else if (DepartureHour == choosehour && DepartureMinute > chooseminute)
+                        check = true;
+                    else {
+                        check = false;
+                    }
+                    if (check) {
 
-                                    search_results.add(search_result);
-                                    break;
+
+                        for (int arraycount2 = arraycount; arraycount2 < StopTimeList.size(); arraycount2++) {
+
+                            stationName=StopTimeList.get(arraycount2).getstationname().getzh_tw();
+
+                            if (stationName.compareTo(endStation) == 0) {
+                            search_result = new HashMap<String, Object>();
+                              int type= c.getInt(c.getColumnIndex("TrainType"));
+                                ArrivalTime=StopTimeList.get(arraycount2).getarrivaltime();
+                                search_result.put("TrainNo", c.getString(c.getColumnIndex("TrainNo")));
+                                search_result.put("Note", c.getString(c.getColumnIndex("Note")));
+
+                                search_result.put("DepartureTime", DepartureTime);
+                                search_result.put("DepartureHour", DepartureHour);
+                                search_result.put("DepartureMinute", DepartureMinute);
+
+                                int ArrivalHour = Integer.parseInt(ArrivalTime.substring(0, ArrivalTime.indexOf(":")));
+                                int ArrivalMinute = Integer.parseInt(ArrivalTime.substring(ArrivalTime.indexOf(":") + 1, ArrivalTime.length()));
+
+                                search_result.put("ArrivalTime", ArrivalTime);
+                                search_result.put("ArrivalHour", DepartureHour);
+                                search_result.put("ArrivalMinute", DepartureMinute);
+
+                                if((ArrivalMinute-DepartureMinute)<0)
+                                {
+                                    ArrivalHour--;
+                                    ArrivalMinute=ArrivalMinute+60;
                                 }
 
-                            }
-                        }
+                                search_result.put("hour",ArrivalHour-DepartureHour);
+                                search_result.put("minute",ArrivalMinute-DepartureMinute);
 
-                        break;
+
+                                switch(type){
+                                    case 1 :
+                                        search_result.put("Trainclass","自強號");
+                                        break;
+                                    case 2 :
+                                        search_result.put("Trainclass","莒光號");
+                                        break;
+                                    case 3 :
+                                        search_result.put("Trainclass","復興號");
+                                        break;
+                                    case 4 :
+                                        search_result.put("Trainclass","區間車");
+                                        break;
+                                    case  11:
+                                        search_result.put("Trainclass","太魯閣號");
+                                        break;
+                                    case 12:
+                                        search_result.put("Trainclass","普悠瑪號");
+                                        break;
+
+                                }
+
+
+
+
+                                search_results.add(search_result);
+                                break;
+                            }
+
+                        }
                     }
 
+                    break;
                 }
-                c.moveToNext();
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
+            c.moveToNext();
 
         }
 //list排序
          Log.i("timetest","search:end sort:start");
+        //排序＆計算時間
         for (int j = 0; j < search_results.size(); j++) {
-            Collections.sort(search_results, new Comparator<Map<String, String>>() {
+            Collections.sort(search_results, new Comparator<Map<String, Object>>() {
                 @Override
-                public int compare(Map<String, String> lhs, Map<String, String> rhs) {
+                public int compare(Map<String, Object> lhs, Map<String, Object> rhs) {
 
-                    Map<String, String> tmp1 = lhs;
-                    Map<String, String> tmp2 = rhs;
+                    Map<String, Object> tmp1 = lhs;
+                    Map<String, Object> tmp2 = rhs;
 
-                    int tmp1hour = Integer.parseInt(tmp1.get("DepartureTime").substring(0, tmp1.get("DepartureTime").indexOf(":")));
-                    int tmp1minute = Integer.parseInt(tmp1.get("DepartureTime").substring(tmp1.get("DepartureTime").indexOf(":") + 1, tmp1.get("DepartureTime").length()));
-                    int tmp2hour = Integer.parseInt(tmp2.get("DepartureTime").substring(0, tmp2.get("DepartureTime").indexOf(":")));
-                    int tmp2minute = Integer.parseInt(tmp2.get("DepartureTime").substring(tmp2.get("DepartureTime").indexOf(":") + 1, tmp2.get("DepartureTime").length()));
+                    int tmp1hour =(Integer)tmp1.get("DepartureHour"); //Integer.parseInt(tmp1.get("DepartureTime").substring(0, tmp1.get("DepartureTime").indexOf(":")));
+                    int tmp1minute = (Integer)tmp1.get("DepartureMinute");//Integer.parseInt(tmp1.get("DepartureTime").substring(tmp1.get("DepartureTime").indexOf(":") + 1, tmp1.get("DepartureTime").length()));
+                    int tmp2hour = (Integer)tmp2.get("ArrivalHour");//Integer.parseInt(tmp2.get("DepartureTime").substring(0, tmp2.get("DepartureTime").indexOf(":")));
+                    int tmp2minute = (Integer)tmp2.get("ArrivalMinute");//Integer.parseInt(tmp2.get("DepartureTime").substring(tmp2.get("DepartureTime").indexOf(":") + 1, tmp2.get("DepartureTime").length()));
 
                     int result;
                     if (tmp1hour > tmp2hour) {
